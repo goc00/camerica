@@ -10,9 +10,11 @@ import android.widget.TextView;
 import com.unab.camerica.R;
 import com.unab.camerica.models.Partido;
 
+import java.util.ArrayList;
+
 public class PartidoAdapter extends ArrayAdapter<Partido> {
 
-    public PartidoAdapter(Context context, Partido[] data) {
+    public PartidoAdapter(Context context, ArrayList<Partido> data) {
         super(context, R.layout.partido, data);
     }
 
