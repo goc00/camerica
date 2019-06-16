@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "222749671212",
+    "firebase_url": "https://camerica-7090e.firebaseio.com",
+    "project_id": "camerica-7090e",
+    "storage_bucket": "camerica-7090e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:222749671212:android:cba46be29de347bd",
+        "android_client_info": {
+          "package_name": "com.unab.camerica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "222749671212-ehsitcd0lpm74h950ibj110varathdlr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4eWH3pjiL3sUZukX2liguoWi54vcyDjU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "222749671212-ehsitcd0lpm74h950ibj110varathdlr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
