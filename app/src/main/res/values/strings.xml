@@ -1,4 +1,15 @@
 <resources>
     <string name="app_name">Copa América 2019</string>
     <string name="vs">v/s</string>
+    <string name="primera_ronda">Primera Ronda</string>
+    <string name="instruction_finalist">Selecciona los finalistas y la cantidad de goles de cada uno</string>
+    <string name="goals_hints">Goles</string>
+    <string name="first_finalist">Primer Finalista</string>
+    <string name="second_finalist">Segundo Finalista</string>
+    <string name="title_finalist">Predecir Resultado</string>
+    <string name="save">Guardar</string>
+    <string name="go_2_predictor">Ir al Predictor</string>
+
+    <string name="identical_countries">Los países seleccionados deben ser distintos</string>
+    <string name="fields_required">Debes completar todos los campos para continuar</string>
 </resources>
