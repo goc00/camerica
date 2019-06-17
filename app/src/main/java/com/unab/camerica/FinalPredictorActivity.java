@@ -160,12 +160,8 @@ public class FinalPredictorActivity extends AppCompatActivity {
                         if(predictions.size() > 0) {
 
                             // Interpretar elementos
-                            if(predictions.size() == 1) {
-                                // Pasa valores a elementos
-
-                            } else {
-                                // Se deben analizar los N elementos (siempre mayor a 1)
-                            }
+                            // TODO: Recorrer arreglo "predictions" y resolver la predicción más escogida
+                            // TODO: Crear elementos para mostrar el resultado de lo anterior
 
                         } else {
                             // Aún no hay elementos de predicción
