@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/predictor"
+    android:id="@+id/predictor_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FinalPredictorActivity">
@@ -39,8 +39,8 @@
 
     <Spinner
         android:id="@+id/country_finalist_2"
-        android:layout_width="186dp"
-        android:layout_height="24dp"
+        android:layout_width="180dp"
+        android:layout_height="37dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="32dp"
@@ -52,7 +52,7 @@
     <Spinner
         android:id="@+id/country_finalist_1"
         android:layout_width="186dp"
-        android:layout_height="24dp"
+        android:layout_height="39dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="32dp"
@@ -62,47 +62,31 @@
         app:layout_constraintTop_toBottomOf="@+id/first_finalist" />
 
     <TextView
-        android:id="@+id/title_finalist"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:text="@string/title_finalist"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/instruction_finalist"
         android:layout_width="370dp"
         android:layout_height="36dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/instruction_finalist"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title_finalist" />
+        tools:layout_editor_absoluteY="88dp" />
 
     <EditText
         android:id="@+id/goals_finalist_1"
-        android:layout_width="110dp"
-        android:layout_height="24dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="102dp"
+        android:layout_height="63dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="28dp"
         android:layout_marginRight="8dp"
         android:autofillHints="@string/goals_hints"
         android:ems="10"
         android:inputType="number"
+        android:textColor="#000000"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/country_finalist_1"
@@ -110,14 +94,16 @@
 
     <EditText
         android:id="@+id/goals_finalist_2"
-        android:layout_width="110dp"
-        android:layout_height="24dp"
+        android:layout_width="108dp"
+        android:layout_height="69dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:autofillHints="@string/goals_hints"
         android:ems="10"
         android:inputType="number"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/country_finalist_2"
@@ -129,12 +115,47 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_calculate_avg"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/second_finalist" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64" />
+
+    <Button
+        android:id="@+id/btn_calculate_avg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/avg"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_save"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.64" />
+
+    <LinearLayout
+        android:id="@+id/res_most_chosen"
+        android:layout_width="394dp"
+        android:layout_height="213dp"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="510dp">
+
+        <TextView
+            android:id="@+id/res_finalista_1"
+            android:layout_width="191dp"
+            android:layout_height="wrap_content"
+            android:text="TextView" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

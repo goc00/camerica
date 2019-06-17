@@ -8,8 +8,14 @@
     <string name="second_finalist">Segundo Finalista</string>
     <string name="title_finalist">Predecir Resultado</string>
     <string name="save">Guardar</string>
+    <string name="avg">Partido más seleccionado</string>
     <string name="go_2_predictor">Ir al Predictor</string>
 
     <string name="identical_countries">Los países seleccionados deben ser distintos</string>
     <string name="fields_required">Debes completar todos los campos para continuar</string>
+
+    <string name="save_ok">Los datos han sido almacenados correctamente</string>
+
+    <string name="predictor_title">Predictor Final</string>
+    <string name="no_predictions">Aún no se han generado predicciones</string>
 </resources>
