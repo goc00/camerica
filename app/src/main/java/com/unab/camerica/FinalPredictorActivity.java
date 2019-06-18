@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -24,9 +26,14 @@ import com.unab.camerica.models.Prediction;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class FinalPredictorActivity extends AppCompatActivity {
 
@@ -70,6 +77,8 @@ public class FinalPredictorActivity extends AppCompatActivity {
         // Header
         //View header = getLayoutInflater().inflate(R.layout.final_predictor_header, null);
         //view.addHeaderView(header);
+
+        addListenerOnMostChosen();
     }
 
     /**
@@ -104,9 +113,11 @@ public class FinalPredictorActivity extends AppCompatActivity {
                     if(et1Str.isEmpty() || et2Str.isEmpty()) { throw new Exception(getString(R.string.fields_required)); }
 
                     // Ok, guarda en firebase
-                    Prediction prediction = new Prediction(id1,id2,
-                                                        Integer.parseInt(et1Str),
-                                                        Integer.parseInt(et2Str));
+                    Prediction prediction = new Prediction(id1,spinner1Str,
+                            id2, spinner2Str,
+                            Integer.parseInt(et1Str),
+                            Integer.parseInt(et2Str)
+                    );
 
                     Calendar now = Calendar.getInstance();
                     Date date = now.getTime();
@@ -135,34 +146,55 @@ public class FinalPredictorActivity extends AppCompatActivity {
      * Calcula la predicción más escogida y promedio de esta
      */
     public void addListenerOnMostChosen() {
-
         Button btn = findViewById(R.id.btn_calculate_avg);
+
         btn.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 String msg = "";
 
-
                 // Obtiene predicciones
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(Cons.FB_SAVE);
                 db.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                        ArrayList<String> selectedCountries = new ArrayList<String>();
                         List<Prediction> predictions = new ArrayList();
+
                         for(DataSnapshot prediction : dataSnapshot.getChildren()) {
                             Prediction pred = new Prediction((HashMap)prediction.getValue());
+
+                            // It's only to prevent crash with older structure
+                            try {
+                                if (pred.getCountryName1() != null && !pred.getCountryName1().isEmpty()) {
+                                    selectedCountries.add(pred.getCountryName1());
+                                }
+
+                                if (pred.getCountryName2() != null && !pred.getCountryName2().isEmpty()) {
+                                    selectedCountries.add(pred.getCountryName2());
+                                }
+                            } catch (Exception e) {
+                                // TODO
+                            }
+
                             predictions.add(pred);
                         }
 
+                        Log.v("selectedCountries", selectedCountries.toString());
+
                         // Verifica los partidos más seleccionados
-                        if(predictions.size() > 0) {
+                        if(selectedCountries.size() > 0) {
+                            Object most1 = countFrequencies(selectedCountries, 1);
+                            String most1Name = most1.toString().split("=")[0];
 
-                            // Interpretar elementos
-                            // TODO: Recorrer arreglo "predictions" y resolver la predicción más escogida
-                            // TODO: Crear elementos para mostrar el resultado de lo anterior
+                            Object most2 = countFrequencies(selectedCountries, 2);
+                            String most2Name = most2.toString().split("=")[0];
+                            Log.v("most1Name", most1Name);
+                            Log.v("most2Name", most2Name);
 
+                            TextView resultText = (TextView)findViewById(R.id.result);
+                            resultText.setText("Los países más votados son " + most1Name + " y " + most2Name);
                         } else {
                             // Aún no hay elementos de predicción
                             Toast.makeText(FinalPredictorActivity.this,
@@ -181,7 +213,45 @@ public class FinalPredictorActivity extends AppCompatActivity {
 
         });
 
+
+
     }
 
+    public static Object countFrequencies(ArrayList<String> list, int pos)
+    {
+        Map<String, Integer> unsorted = new HashMap<String, Integer>();
 
+        // Set unsorted
+        for (String i : list) {
+            Integer j = unsorted.get(i);
+            unsorted.put(i, (j == null) ? 1 : j + 1);
+        }
+
+        // Set sorted
+        SortedSet<Map.Entry<String, Integer>> entries = entriesSortedByValues(unsorted);
+        int size = (entries.size() - pos);
+        Object entry = entries.toArray()[size];
+
+        Log.v("pos", Integer.toString(pos));
+        Log.v("size", Integer.toString(size));
+        Log.v("entries", entries.toString());
+        Log.v("entry", entry.toString());
+
+
+        return entry;
+    }
+
+    // Find solution here: https://stackoverflow.com/a/4702335
+    static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+        SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+                new Comparator<Map.Entry<K,V>>() {
+                    @Override public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+                        int res = e1.getValue().compareTo(e2.getValue());
+                        return res != 0 ? res : 1; // Special fix to preserve items with equal values
+                    }
+                }
+        );
+        sortedEntries.addAll(map.entrySet());
+        return sortedEntries;
+    }
 }
