@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.unab.camerica.adapters.PartidoAdapter;
 import com.unab.camerica.models.Equipo;
 import com.unab.camerica.models.Partido;
@@ -49,6 +50,13 @@ public class MatchesActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fab = findViewById(R.id.floatingActionButton);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToPredictor();
+            }
+        });
     }
 
     /**
