@@ -9,6 +9,7 @@
     <string name="title_finalist">Predecir Resultado</string>
     <string name="save">Guardar</string>
     <string name="avg">Partido más seleccionado</string>
+    <string name="view_vote">Ver Votaciones</string>
     <string name="go_2_predictor">Ir al Predictor</string>
 
     <string name="identical_countries">Los países seleccionados deben ser distintos</string>
