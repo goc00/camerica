@@ -4,9 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -39,16 +37,6 @@ public class MatchesActivity extends AppCompatActivity {
 
         lista.setAdapter(adapter);
         lista.addHeaderView(header);
-        lista.addFooterView(footer);
-
-        // Listener para acción del botón
-        final Button go2Predictor = (Button)findViewById(R.id.go_2_predictor);
-        go2Predictor.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // Generará el intent pasándole la lista de países
-                goToPredictor();
-            }
-        });
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +52,8 @@ public class MatchesActivity extends AppCompatActivity {
      */
     private void goToPredictor() {
         Intent intent = new Intent(this, FinalPredictorActivity.class);
-
         intent.putParcelableArrayListExtra("countriesList", countries);
-
         this.startActivity(intent);
-        this.finish();
     }
 
 }

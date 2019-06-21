@@ -23,12 +23,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.unab.camerica.constants.Cons;
 import com.unab.camerica.models.Equipo;
 import com.unab.camerica.models.Prediction;
+import com.unab.camerica.models.Resultado;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -39,6 +41,7 @@ public class FinalPredictorActivity extends AppCompatActivity {
 
     private Spinner spinner1, spinner2;
     private EditText et1, et2;
+    private TextView resultText;
 
     // Para mantener ids referenciados
     HashMap<Integer, Long> spinnerIds = new HashMap<Integer, Long>();
@@ -47,8 +50,6 @@ public class FinalPredictorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_final_predictor);
-
-        //ListView view = findViewById(R.id.predictor_layout);
 
         ArrayList<Equipo> countries = getIntent().getParcelableArrayListExtra("countriesList");
 
@@ -74,11 +75,7 @@ public class FinalPredictorActivity extends AppCompatActivity {
         addListenerOnButton();
         addListenerOnMostChosen();
 
-        // Header
-        //View header = getLayoutInflater().inflate(R.layout.final_predictor_header, null);
-        //view.addHeaderView(header);
-
-        addListenerOnMostChosen();
+        //addListenerOnMostChosen();
     }
 
     /**
@@ -153,49 +150,96 @@ public class FinalPredictorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String msg = "";
+                resultText = (TextView)findViewById(R.id.result);
+                resultText.setText("Calculando...");
 
                 // Obtiene predicciones
                 DatabaseReference db = FirebaseDatabase.getInstance().getReference().child(Cons.FB_SAVE);
                 db.addListenerForSingleValueEvent(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        ArrayList<String> selectedCountries = new ArrayList<String>();
-                        List<Prediction> predictions = new ArrayList();
+
+                        // Almacena resultados interpretados
+                        HashMap<String, List<Resultado>> results = new HashMap<>();
 
                         for(DataSnapshot prediction : dataSnapshot.getChildren()) {
                             Prediction pred = new Prediction((HashMap)prediction.getValue());
 
-                            // It's only to prevent crash with older structure
-                            try {
-                                if (pred.getCountryName1() != null && !pred.getCountryName1().isEmpty()) {
-                                    selectedCountries.add(pred.getCountryName1());
-                                }
+                            // "Crea" índice para evaluar
+                            String localName = pred.getCountryName1().toUpperCase();
+                            String visitaName = pred.getCountryName2().toUpperCase();
 
-                                if (pred.getCountryName2() != null && !pred.getCountryName2().isEmpty()) {
-                                    selectedCountries.add(pred.getCountryName2());
-                                }
-                            } catch (Exception e) {
-                                // TODO
+                            String indexA = localName+"-"+visitaName;
+                            String indexB = visitaName+"-"+localName;
+
+                            // Valida si alguna de las combinaciones de índice existe o no
+                            boolean exists = false;
+                            if(results.containsKey(indexA) || results.containsKey(indexB)) {
+                                exists = true;
                             }
 
-                            predictions.add(pred);
+                            if(exists) {
+                                // Si existe, agrega el resultado dependiendo en el sentido que aplique
+                                // respecto al índice almacenado en primera instancia
+                                if(results.containsKey(indexA)) {
+                                    List<Resultado> list = results.get(indexA);
+                                    list.add(new Resultado(pred.getRes1(), pred.getRes2()));
+                                    results.put(indexA, list);
+                                } else {
+                                    List<Resultado> list = results.get(indexB);
+                                    list.add(new Resultado(pred.getRes2(), pred.getRes1()));
+                                    results.put(indexB, list);
+                                }
+                            } else {
+                                // Almacena primer resultado, con el índice que haya salido por primera vez
+                                // Esto no afecta en absoluto la interpretación de resultados al controlarse
+                                // en la condición previa
+                                Resultado res = new Resultado(pred.getRes1(), pred.getRes2());
+                                List<Resultado> firstRes = new ArrayList<>();
+                                firstRes.add(res);
+                                results.put(indexA, firstRes);
+                            }
+
                         }
 
-                        Log.v("selectedCountries", selectedCountries.toString());
 
                         // Verifica los partidos más seleccionados
-                        if(selectedCountries.size() > 0) {
-                            Object most1 = countFrequencies(selectedCountries, 1);
-                            String most1Name = most1.toString().split("=")[0];
+                        if(results.size() > 0) {
 
-                            Object most2 = countFrequencies(selectedCountries, 2);
-                            String most2Name = most2.toString().split("=")[0];
-                            Log.v("most1Name", most1Name);
-                            Log.v("most2Name", most2Name);
+                            // Obtiene tupla partido más seleccionado
+                            int max = Integer.MIN_VALUE;
+                            String maxIndex = "";
 
-                            TextView resultText = (TextView)findViewById(R.id.result);
-                            resultText.setText("Los países más votados son " + most1Name + " y " + most2Name);
+                            for (Map.Entry<String, List<Resultado>> entry : results.entrySet()) {
+                                String key = entry.getKey();
+                                List<Resultado> value = entry.getValue();
+
+                                if(value.size() > max) { maxIndex = key; }
+                            }
+
+                            // Resultados de tupla más seleccionada
+                            String[] arr = maxIndex.split("-");
+                            List<Resultado> maxRes = results.get(maxIndex);
+                            float sumLocal = 0;
+                            float sumVisita = 0;
+                            float t = maxRes.size();
+
+                            Iterator<Resultado> ite = maxRes.iterator();
+                            while (ite.hasNext()) {
+                                Resultado r = ite.next();
+                                sumLocal += r.getResLocal();
+                                sumVisita += r.getResVisita();
+                            }
+
+                            int sumLAdj = (int)Math.ceil(sumLocal/t);
+                            int sumVAdj = (int)Math.ceil(sumVisita/t);
+
+                            // Muestra resultados
+                            resultText.setText("Los países más seleccionados han sido " + arr[0] + " y " + arr[1] + " con un promedio de resultados de " + sumLAdj + " contra " + sumVAdj);
+
                         } else {
+                            resultText.setText("");
                             // Aún no hay elementos de predicción
                             Toast.makeText(FinalPredictorActivity.this,
                                     getString(R.string.no_predictions),
